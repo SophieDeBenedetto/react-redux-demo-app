@@ -32,6 +32,7 @@
     "redux-thunk": "2.0.1",
     "toastr": "2.1.2",
     "open": "0.0.5",
+    "compression": "^1.6.1",
     "express": "4.13.4"
 
   },
