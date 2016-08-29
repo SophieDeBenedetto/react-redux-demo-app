@@ -11,6 +11,29 @@ class ManageCoursePage extends React.Component {
       course: Object.assign({}, this.props.course),
       errors: {}
     };
+
+    this.updateCourseState = this.updateCourseState.bind(this);
+    this.saveCourse = this.saveCourse.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.course.id != nextProps.course.id) {
+      this.setState({course: Object.assign({}, nextProps.course)})
+    }
+  }
+
+  updateCourseState(event) {
+    const field = event.target.name;
+    const course = this.state.course;
+    course[field] = event.target.value;
+    return this.setState({course: course});
+  }
+
+  saveCourse(event) {
+    event.preventDefault();
+    this.props.actions.saveCourse(this.state.course);
+    this.context.router.push('/courses');
+
   }
 
   render() {
@@ -18,6 +41,8 @@ class ManageCoursePage extends React.Component {
       <CourseForm 
         errors={this.state.errors}
         allAuthors={this.props.authors}
+        onChange={this.updateCourseState}
+        onSave={this.saveCourse}
         course={this.state.course} />
     );
   }
@@ -25,11 +50,31 @@ class ManageCoursePage extends React.Component {
 
 ManageCoursePage.propTypes = {
   course: PropTypes.object.isRequired,
-  authors: PropTypes.array.isRequired
+  authors: PropTypes.array.isRequired,
+  actions: PropTypes.object.isRequired
+}
+
+ManageCoursePage.contextTypes = {
+  // this gives us context for the router. context used by react router to provide easy access to the data we need
+  router: PropTypes.object
+}
+
+function getCourseById(courses, id) {
+  let course = courses.filter(course => course.id == id);
+  if (course) {
+    return course[0];
+  } else {
+    return null;
+  }
 }
 
 function mapStateToProps(state, ownProps) {
   let course = {id: '', watchHref: '', title: '', authorId: '', length: '', category: ''};
+  const courseId = ownProps.params.id;
+  if (courseId && state.courses.length > 0) {
+    course = getCourseById(state.courses, courseId)
+  }
+
   const authorsFormattedForDropdown = state.authors.map(author =>{
     return {value: author.id, text: author.firstName + ' ' + author.lastName}
   })
@@ -44,5 +89,7 @@ function mapDispatchToProps(dispatch) {
     actions: bindActionCreators(courseActions, dispatch)
   };
 }
+
+// changes to props dont' change state. later when ajax call completes, this.props.course is updated, but we set state to course, pass state to child component. finish ajax won't change this component's state.
 
 export default connect(mapStateToProps, mapDispatchToProps)(ManageCoursePage);
