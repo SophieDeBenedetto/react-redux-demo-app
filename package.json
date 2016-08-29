@@ -42,7 +42,11 @@
     "redux-thunk": "2.0.1",
     "toastr": "2.1.2",
     "colors": "1.1.2",
-    "webpack": "1.13.0"
+    "webpack": "1.13.0",
+    "eslint": "2.9.0",
+    "eslint-plugin-import": "1.6.1",
+    "eslint-plugin-react": "5.0.1",
+    "eslint-watch": "2.1.11"
   },
   "devDependencies": {
     "babel-cli": "6.8.0",
