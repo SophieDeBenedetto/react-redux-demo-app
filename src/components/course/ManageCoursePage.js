@@ -16,6 +16,7 @@ class ManageCoursePage extends React.Component {
 
     this.updateCourseState = this.updateCourseState.bind(this);
     this.saveCourse = this.saveCourse.bind(this);
+    this.onDelete = this.onDelete.bind(this);
     this.redirect = this.redirect.bind(this);
   }
 
@@ -40,7 +41,13 @@ class ManageCoursePage extends React.Component {
 
   } 
 
+  onDelete(event) {
+    this.props.actions.deleteCourse(this.state.course)
+      .then(() => {this.redirect()});
+  }
+
   redirect() {
+    debugger;
     this.setState({saving: true});
     toastr.success('Course saved');
     this.context.router.push('/courses');
@@ -54,6 +61,7 @@ class ManageCoursePage extends React.Component {
         onChange={this.updateCourseState}
         onSave={this.saveCourse}
         course={this.state.course}
+        onDelete={this.onDelete}
         saving={this.state.saving} />
     );
   }
@@ -83,7 +91,10 @@ function mapStateToProps(state, ownProps) {
   let course = {id: '', watchHref: '', title: '', authorId: '', length: '', category: ''};
   const courseId = ownProps.params.id;
   if (courseId && state.courses.length > 0) {
-    course = getCourseById(state.courses, courseId);
+    var currentCourse = getCourseById(state.courses, courseId);
+    if (currentCourse) {
+      course = currentCourse
+    }
   }
 
   const authorsFormattedForDropdown = state.authors.map(author =>{

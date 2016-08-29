@@ -18,6 +18,10 @@ export function updateCourseSuccess(course) {
   return {type: types.UPDATE_COURSE_SUCCESS, course}
 }
 
+export function deleteCourseSuccess(course) {
+  return {type: types.DELETE_COURSE_SUCCESS, course}
+}
+
 export function loadCourses() {
   // make async call to api, handle promise, dispatch action when promise is resolved
   return function(dispatch) {
@@ -40,3 +44,21 @@ export function saveCourse(course) {
     });
   };
 }
+
+export function deleteCourse(course) {
+  return function(dispatch) {
+    return courseApi.deleteCourse(course).then(() => {
+      console.log(`Deleted ${course.id}`)
+      dispatch(deleteCourseSuccess(course));
+    }).catch(error => {
+      throw(error);
+    })
+  }
+}
+
+
+
+
+
+
+
